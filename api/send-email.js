@@ -46,6 +46,14 @@ export default async function handler(req, res) {
     });
 
     try {
+        try {
+  await transporter.verify();
+  console.log('✅ Mail server is ready');
+} catch (error) {
+  console.error('❌ Mail server verification failed:', error);
+  return res.status(500).json({ message: 'Mail server configuration error' });
+}
+
       // Send to YOU
       await transporter.sendMail({
         from: `"${name}" <${email}>`,
