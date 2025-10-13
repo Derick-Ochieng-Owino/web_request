@@ -2,50 +2,19 @@ import formidable from 'formidable';
 import fs from 'fs';
 import nodemailer from 'nodemailer';
 
-export const config = {
-  api: {
-    bodyParser: false, // let formidable handle multipart/form-data
-  },
-};
+export const config = { api: { bodyParser: false } };
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+export default async function handler(req,res){
+  if(req.method!=='POST') return res.status(405).json({error:'Method Not Allowed'});
 
   const form = formidable({ multiples: true });
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error('Form parse error:', err);
-      return res.status(500).json({ error: 'Failed to parse form' });
-    }
+  form.parse(req, async (err, fields, files)=>{
+    if(err) return res.status(500).json({error:'Form parse failed'});
 
     try {
-      // Extract all fields
-      const {
-        name,
-        email,
-        phone,
-        contact_method,
-        business_name,
-        industry,
-        company_description,
-        tiktok,
-        instagram,
-        linkedin,
-        x,
-        facebook,
-        youtube,
-        website_type,
-        goals,
-        pages,
-        features,
-        design_preferences,
-        additional_notes,
-      } = fields;
+      const { name, email, phone, contact_method, business_name, industry, company_description, tiktok, instagram, linkedin, x, facebook, youtube, website_type, goals, pages, features, design_preferences, additional_notes } = fields;
 
-      // Build the email content for your inbox
       const messageText = `
 📌 PERSONAL INFO
 - Name: ${name}
@@ -70,69 +39,52 @@ export default async function handler(req, res) {
 - Website Type: ${website_type}
 - Goals: ${goals}
 - Pages: ${pages || 'N/A'}
-- Features: ${Array.isArray(features) ? features.join(', ') : features || 'N/A'}
+- Features: ${Array.isArray(features)?features.join(', '):features || 'N/A'}
 - Design Preferences: ${design_preferences || 'N/A'}
 
 📝 ADDITIONAL NOTES
 ${additional_notes || 'None provided'}
       `;
 
-      // Prepare file attachments
+      // Attach uploaded files
       const attachments = [];
-      for (const key in files) {
+      for(const key in files){
         const fileData = files[key];
-        const fileArray = Array.isArray(fileData) ? fileData : [fileData];
-
-        fileArray.forEach(file => {
-          attachments.push({
-            filename: file.originalFilename,
-            content: fs.createReadStream(file.filepath),
-          });
+        const fileArray = Array.isArray(fileData)?fileData:[fileData];
+        fileArray.forEach(file=>{
+          attachments.push({ filename:file.originalFilename, content: fs.createReadStream(file.filepath) });
         });
       }
 
-      // Configure nodemailer
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT, 10),
+        port: parseInt(process.env.SMTP_PORT,10),
         secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
+        auth:{ user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
       });
 
-      // 1️⃣ Send email to yourself / admin
+      // 1️⃣ Send to admin
       await transporter.sendMail({
         from: `"Website Request Form" <${process.env.SMTP_USER}>`,
         to: process.env.CONTACT_RECEIVER,
-        replyTo: email, // lets you reply directly to the user
+        replyTo: email,
         subject: `New Website Request from ${name}`,
         text: messageText,
-        attachments,
+        attachments
       });
 
-      // 2️⃣ Send confirmation email to user
+      // 2️⃣ Send confirmation to user
       await transporter.sendMail({
         from: `"Your Company Name" <${process.env.SMTP_USER}>`,
         to: email,
         subject: `✅ We've received your website request`,
-        text: `Hi ${name},
-
-Thank you for submitting your website project request. We have received the following details:
-
-${messageText}
-
-We will review your request and get back to you within 24 hours.
-
-Best regards,
-Your Company Name`,
+        text: `Hi ${name},\n\nThank you for submitting your website project request. We received the following details:\n\n${messageText}\n\nWe will review your request and get back to you within 24 hours.\n\nBest regards,\nYour Company Name`
       });
 
-      res.status(200).json({ success: true });
-    } catch (error) {
+      res.status(200).json({ success:true });
+    } catch(error){
       console.error('Email send error:', error);
-      res.status(500).json({ error: 'Failed to send email' });
+      res.status(500).json({ error:'Failed to send email' });
     }
   });
 }
