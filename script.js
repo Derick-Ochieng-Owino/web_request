@@ -139,7 +139,7 @@ document.getElementById('websiteRequestForm').addEventListener('submit', async f
 
   try {
     const formData = new FormData(this);
-    const response = await fetch('/api/send-email',{ method:'POST', body:formData });
+    const response = await fetch('https://web-request-beryl.vercel.app/api/send-mail',{ method:'POST', body:formData });
     if(!response.ok) throw new Error(`Server responded with ${response.status}`);
     showStatus('Your request has been submitted successfully! I\'ll get back to you within 24 hours.','success');
 
