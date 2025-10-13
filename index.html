@@ -14,62 +14,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Website Project Request Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* Softer color theme */
-    :root {
-      --primary: #2c5282; /* soft navy */
-      --primary-hover: #2b4365;
-      --bg: #f7f8fa;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: #333;
-    }
-
-    input[type="file"]::-webkit-file-upload-button {
-      background: var(--primary);
-      color: white;
-      padding: 0.4rem 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    input[type="file"]::-webkit-file-upload-button:hover {
-      background: var(--primary-hover);
-    }
-
-    /* Disable right click & shortcuts */
-    body.disable-inspect {
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    /* Temporary inspector access button */
-    #viewSourceBtn {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: var(--primary);
-      color: white;
-      padding: 0.5rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      z-index: 9999;
-    }
-
-    #viewSourceBtn:hover {
-      background: var(--primary-hover);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="disable-inspect antialiased">
 
@@ -216,7 +161,7 @@
         </section>
 
         <!-- 5. File Uploads -->
-        <section>
+        <!-- <section>
           <h2 class="text-lg font-semibold mb-3 text-gray-800">📎 File Uploads</h2>
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Upload Logo</label>
@@ -231,7 +176,7 @@
             <label class="block text-sm font-medium mb-1">Upload Multiple Images</label>
             <input name="pictures" type="file" accept="image/*" multiple class="w-full border rounded p-2">
           </div>
-        </section>
+        </section> -->
 
         <!-- 6. Additional Notes -->
         <section>
@@ -256,7 +201,7 @@
   </footer>
 
   <!-- Temporary button to bypass block -->
-  <button id="viewSourceBtn" onclick="toggleInspection()">🔓 View Source</button>
+  <button id="viewSourceBtn" onclick="toggleInspection()">View Source</button>
 
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js"></script>

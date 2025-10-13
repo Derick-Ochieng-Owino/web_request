@@ -20,7 +20,7 @@ document.addEventListener('keydown', e => {
 
 function toggleInspection() {
   window.inspectEnabled = !window.inspectEnabled;
-  alert(window.inspectEnabled ? "🔓 Inspection temporarily enabled" : "🔒 Inspection disabled again");
+  alert(window.inspectEnabled ? "Inspection temporarily enabled" : "🔒 Inspection disabled again");
 }
 
 // EmailJS setup
