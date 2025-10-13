@@ -23,29 +23,33 @@ function toggleInspection() {
   alert(window.inspectEnabled ? "Inspection temporarily enabled" : "🔒 Inspection disabled again");
 }
 
-// EmailJS setup
-(function() {
-  emailjs.init("IUOE1N2EHEPCmMkfq"); // Replace with your EmailJS public key
-})();
 
-document.getElementById('form-time').value = new Date().toLocaleString();
 
-// Handle form submission
-document.getElementById('websiteRequestForm').addEventListener('submit', function(e) {
+document.getElementById('websiteRequestForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
 
-  const status = document.getElementById('form-status');
-  status.classList.remove('hidden');
-  status.textContent = 'Sending your request...';
+  const statusEl = document.getElementById('form-status');
+  statusEl.classList.remove('hidden');
+  statusEl.textContent = 'Submitting... ';
 
-  emailjs.sendForm('service_hqcccyb', 'template_1n1eq8c', this)
-    .then(() => {
-      status.textContent = 'Your request has been sent successfully!';
-      this.reset();
-    })
-    .catch(error => {
-      console.error('EmailJS error:', error);
-      status.textContent = 'Failed to send. Please try again.';
-      status.classList.add('text-red-600');
+  try {
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      body: formData
     });
+
+    const data = await res.json();
+    if (res.ok) {
+      statusEl.textContent = 'Thank you! Your request has been submitted.';
+      form.reset();
+    } else {
+      statusEl.textContent = 'Submission failed: ' + data.message;
+      statusEl.classList.add('text-red-600');
+    }
+  } catch (err) {
+    statusEl.textContent = 'Network error';
+    statusEl.classList.add('text-red-600');
+  }
 });
