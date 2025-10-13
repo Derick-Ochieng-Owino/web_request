@@ -2,22 +2,133 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48QFZEFW60"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-48QFZEFW60');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-48QFZEFW60"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-48QFZEFW60');
+  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Website Project Request Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+    }
+    
+    .form-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      background-color: rgba(249, 250, 251, 0.5);
+    }
+    
+    .file-upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+      border-color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    .file-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .file-preview img {
+      max-width: 80px;
+      height: auto;
+      border-radius: 0.375rem;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      transition: width 0.5s ease;
+    }
+    
+    .character-count {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: right;
+      margin-top: 0.25rem;
+    }
+    
+    .character-count.warning {
+      color: #ef4444;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--primary);
+      border-radius: 50%;
+    }
+    
+    .feature-checkbox {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.375rem;
+      transition: all 0.2s ease;
+    }
+    
+    .feature-checkbox:hover {
+      border-color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    .feature-checkbox input:checked + span {
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
-<body class="disable-inspect antialiased">
-  <header class="bg-white shadow">
+<body class="antialiased bg-gray-50">
+  <header class="bg-white shadow sticky top-0 z-10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
       <a href="index.html" class="text-lg font-bold text-[var(--primary)]">My Portfolio</a>
       <a href="index.html#contact" class="text-sm text-[var(--primary)] hover:underline">Back to Home</a>
@@ -25,33 +136,58 @@
   </header>
 
   <!-- FORM -->
-  <main class="py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-lg rounded-xl p-8">
+  <main class="py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-lg rounded-xl p-6 md:p-8">
       <h1 class="text-2xl font-bold text-[var(--primary)] mb-2">Website Project Request Form</h1>
-      <p class="text-gray-600 text-sm mb-8">
+      <p class="text-gray-600 text-sm mb-6">
         Fill out this form to give me a clear idea of your website needs. The more details you provide, the better I can understand your vision and give you an accurate proposal.
       </p>
 
-      <form id="websiteRequestForm" class="space-y-8">
+      <!-- Progress Indicator -->
+      <div class="mb-8">
+        <div class="flex justify-between text-xs text-gray-500 mb-2">
+          <span>Personal Info</span>
+          <span>Company</span>
+          <span>Project</span>
+          <span>Files</span>
+          <span>Review</span>
+        </div>
+        <div class="progress-bar">
+          <div id="formProgress" class="progress-fill w-1/5"></div>
+        </div>
+      </div>
+
+      <form id="websiteRequestForm" method="POST" class="space-y-8" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" id="csrfToken">
+
         <!-- 1. Personal Information -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800"> Personal / Contact Information</h2>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            Personal / Contact Information
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium mb-1"> Full Name *</label>
-              <input required name="name" type="text" class="w-full p-3 border rounded" placeholder="John Doe">
+              <label class="block text-sm font-medium mb-1">
+                Full Name <span class="text-red-500">*</span>
+              </label>
+              <input required name="name" type="text" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="John Doe">
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1"> Email *</label>
-              <input required name="email" type="email" class="w-full p-3 border rounded" placeholder="john@example.com">
+              <label class="block text-sm font-medium mb-1">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input required name="email" type="email" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="john@example.com">
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1"> Phone *</label>
-              <input required name="phone" type="tel" class="w-full p-3 border rounded" placeholder="+2547XXXXXXXX">
+              <label class="block text-sm font-medium mb-1">
+                Phone <span class="text-red-500">*</span>
+              </label>
+              <input required name="phone" type="tel" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="+2547XXXXXXXX">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Preferred Contact Method</label>
-              <select name="contact_method" class="w-full p-3 border rounded">
+              <select name="contact_method" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent">
                 <option>Email</option>
                 <option>Phone</option>
                 <option>WhatsApp</option>
@@ -61,62 +197,74 @@
         </section>
 
         <!-- 2. Company / Business Info -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">🏢 Company / Business Information (Optional)</h2>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            🏢 Company / Business Information (Optional)
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">Business / Organization Name</label>
-              <input name="business_name" type="text" class="w-full p-3 border rounded" placeholder="e.g. Bluewave Media Ltd">
+              <input name="business_name" type="text" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="e.g. Bluewave Media Ltd">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Industry / Sector</label>
-              <input name="industry" type="text" class="w-full p-3 border rounded" placeholder="e.g. Real Estate, NGO, E-commerce">
+              <input name="industry" type="text" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="e.g. Real Estate, NGO, E-commerce">
             </div>
           </div>
           <div class="mt-4">
             <label class="block text-sm font-medium mb-1">Brief Company Description</label>
-            <textarea name="company_description" rows="3" class="w-full p-3 border rounded" placeholder="Describe your company and what you do..."></textarea>
+            <textarea name="company_description" rows="3" maxlength="300" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="Describe your company and what you do..."></textarea>
+            <div class="character-count" id="companyDescriptionCount">0/300 characters</div>
           </div>
         </section>
 
         <!-- 3. Social Media Links -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">🌐 Social Media Links (Optional)</h2>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            🌐 Social Media Links (Optional)
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">TikTok</label>
-              <input name="tiktok" type="url" class="w-full p-3 border rounded" placeholder="https://www.tiktok.com/@yourhandle">
+              <input name="tiktok" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://www.tiktok.com/@yourhandle">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Instagram</label>
-              <input name="instagram" type="url" class="w-full p-3 border rounded" placeholder="https://www.instagram.com/yourprofile">
+              <input name="instagram" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://www.instagram.com/yourprofile">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">LinkedIn</label>
-              <input name="linkedin" type="url" class="w-full p-3 border rounded" placeholder="https://www.linkedin.com/in/yourprofile">
+              <input name="linkedin" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://www.linkedin.com/in/yourprofile">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">X (Twitter)</label>
-              <input name="x" type="url" class="w-full p-3 border rounded" placeholder="https://x.com/yourhandle">
+              <input name="x" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://x.com/yourhandle">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Facebook</label>
-              <input name="facebook" type="url" class="w-full p-3 border rounded" placeholder="https://facebook.com/yourpage">
+              <input name="facebook" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://facebook.com/yourpage">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">YouTube</label>
-              <input name="youtube" type="url" class="w-full p-3 border rounded" placeholder="https://youtube.com/yourchannel">
+              <input name="youtube" type="url" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="https://youtube.com/yourchannel">
             </div>
           </div>
         </section>
 
         <!-- 4. Website Project Details -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">🌐 Website Project Details</h2>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            🌐 Website Project Details
+          </h2>
 
           <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Type of Website *</label>
-            <select required name="website_type" class="w-full p-3 border rounded">
+            <label class="block text-sm font-medium mb-1">
+              Type of Website <span class="text-red-500">*</span>
+            </label>
+            <select required name="website_type" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent">
               <option value="">Select type</option>
               <option>Personal Portfolio</option>
               <option>Company / Business Site</option>
@@ -129,80 +277,158 @@
           </div>
 
           <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Main Goals of the Website *</label>
-            <textarea required name="goals" rows="3" class="w-full p-3 border rounded" placeholder="e.g. Showcase services, collect leads, sell products, improve brand presence..."></textarea>
+            <label class="block text-sm font-medium mb-1">
+              Main Goals of the Website <span class="text-red-500">*</span>
+            </label>
+            <textarea required name="goals" rows="3" maxlength="500" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="e.g. Showcase services, collect leads, sell products, improve brand presence..."></textarea>
+            <div class="character-count" id="goalsCount">0/500 characters</div>
           </div>
 
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Pages / Sections Needed</label>
-            <textarea name="pages" rows="3" class="w-full p-3 border rounded" placeholder="e.g. Home, About, Services, Contact, Blog, Shop"></textarea>
+            <textarea name="pages" rows="3" maxlength="400" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="e.g. Home, About, Services, Contact, Blog, Shop"></textarea>
+            <div class="character-count" id="pagesCount">0/400 characters</div>
           </div>
 
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Specific Features (check all that apply)</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <label><input type="checkbox" name="features" value="Contact Form" class="mr-2">Contact Form</label>
-              <label><input type="checkbox" name="features" value="Blog/News" class="mr-2">Blog / News</label>
-              <label><input type="checkbox" name="features" value="E-commerce" class="mr-2">E-commerce</label>
-              <label><input type="checkbox" name="features" value="Booking System" class="mr-2">Booking System</label>
-              <label><input type="checkbox" name="features" value="User Accounts" class="mr-2">User Accounts / Dashboard</label>
-              <label><input type="checkbox" name="features" value="Portfolio Gallery" class="mr-2">Portfolio / Gallery</label>
-              <label><input type="checkbox" name="features" value="Chat Integration" class="mr-2">Live Chat / WhatsApp</label>
-              <label><input type="checkbox" name="features" value="Multilingual" class="mr-2">Multilingual</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Contact Form" class="mr-2">
+                <span>Contact Form</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Blog/News" class="mr-2">
+                <span>Blog / News</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="E-commerce" class="mr-2">
+                <span>E-commerce</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Booking System" class="mr-2">
+                <span>Booking System</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="User Accounts" class="mr-2">
+                <span>User Accounts / Dashboard</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Portfolio Gallery" class="mr-2">
+                <span>Portfolio / Gallery</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Chat Integration" class="mr-2">
+                <span>Live Chat / WhatsApp</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" name="features" value="Multilingual" class="mr-2">
+                <span>Multilingual</span>
+              </label>
             </div>
           </div>
 
           <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Design Preferences</label>
-            <textarea name="design_preferences" rows="3" class="w-full p-3 border rounded" placeholder="Describe any style, color scheme, or example websites you like..."></textarea>
+            <textarea name="design_preferences" rows="3" maxlength="400" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="Describe any style, color scheme, or example websites you like..."></textarea>
+            <div class="character-count" id="designCount">0/400 characters</div>
           </div>
         </section>
 
         <!-- 5. File Uploads -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800"> File Uploads</h2>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            📎 File Uploads
+          </h2>
+          
           <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Upload Logo</label>
-            <input name="logo" type="file" accept="image/*" class="w-full border rounded p-2">
+            <label class="block text-sm font-medium mb-2">Upload Logo</label>
+            <input name="logo" type="file" accept="image/*" class="hidden" id="logoUpload">
+            <label for="logoUpload" class="file-upload-area block cursor-pointer">
+              <div class="flex flex-col items-center justify-center">
+                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <span class="text-sm font-medium text-gray-600">Click to upload logo</span>
+                <span class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</span>
+              </div>
+            </label>
+            <span id="logoFileName" class="text-sm text-gray-500 mt-2 block">No file chosen</span>
+            <div id="logoPreview" class="file-preview hidden"></div>
           </div>
+
           <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Upload Brand Assets / PDFs / References</label>
-            <input name="assets" type="file" accept=".pdf,image/*,.zip,.ai,.psd" multiple class="w-full border rounded p-2">
-            <p class="text-xs text-gray-500 mt-1">You can attach multiple files.</p>
+            <label class="block text-sm font-medium mb-2">Upload Brand Assets / PDFs / References</label>
+            <input name="assets" type="file" accept=".pdf,image/*,.zip,.ai,.psd" multiple class="hidden" id="assetsUpload">
+            <label for="assetsUpload" class="file-upload-area block cursor-pointer">
+              <div class="flex flex-col items-center justify-center">
+                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                </svg>
+                <span class="text-sm font-medium text-gray-600">Click to upload files</span>
+                <span class="text-xs text-gray-500 mt-1">PDF, Images, ZIP, AI, PSD up to 10MB each</span>
+              </div>
+            </label>
+            <span id="assetsFileName" class="text-sm text-gray-500 mt-2 block">No files chosen</span>
+            <div id="assetsPreview" class="file-preview hidden"></div>
           </div>
+
           <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Upload Multiple Images</label>
-            <input name="pictures" type="file" accept="image/*" multiple class="w-full border rounded p-2">
+            <label class="block text-sm font-medium mb-2">Upload Multiple Images</label>
+            <input name="pictures" type="file" accept="image/*" multiple class="hidden" id="picturesUpload">
+            <label for="picturesUpload" class="file-upload-area block cursor-pointer">
+              <div class="flex flex-col items-center justify-center">
+                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span class="text-sm font-medium text-gray-600">Click to upload images</span>
+                <span class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 5MB each</span>
+              </div>
+            </label>
+            <span id="picturesFileName" class="text-sm text-gray-500 mt-2 block">No files chosen</span>
+            <div id="picturesPreview" class="file-preview hidden"></div>
           </div>
         </section>
 
         <!-- 6. Additional Notes -->
-        <section>
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">📝 Additional Notes</h2>
-          <textarea name="additional_notes" rows="4" class="w-full p-3 border rounded" placeholder="Anything else you'd like to add or clarify?"></textarea>
+        <section class="form-section">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 section-header">
+            <span class="section-dot"></span>
+            📝 Additional Notes
+          </h2>
+          <textarea name="additional_notes" rows="4" maxlength="600" class="w-full p-3 border rounded focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent" placeholder="Anything else you'd like to add or clarify?"></textarea>
+          <div class="character-count" id="notesCount">0/600 characters</div>
         </section>
 
-        <!-- 7. Submit -->
-        <div class="pt-4 flex items-center justify-between">
-          <p id="form-status" class="text-sm text-green-600 hidden">Your request has been submitted (demo).</p>
-          <button type="submit" class="px-6 py-3 bg-[var(--primary)] text-white rounded hover:bg-[var(--primary-hover)]">Submit Request</button>
+        <!-- Privacy Policy Agreement -->
+        <div class="text-xs text-gray-500 mb-4 p-4 bg-blue-50 rounded-lg">
+          <label class="flex items-start">
+            <input type="checkbox" required class="mt-1 mr-2">
+            <span>
+              I agree to the <a href="/privacy" class="text-blue-600 hover:underline">Privacy Policy</a> and understand my data will be used solely for project communication. I acknowledge that files I upload may be stored securely for project purposes.
+            </span>
+          </label>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p id="form-status" class="text-sm hidden"></p>
+          <button type="submit" id="submitButton" class="px-6 py-3 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-hover)] transition-colors w-full sm:w-auto flex items-center justify-center gap-2">
+            <span>Submit Request</span>
+          </button>
         </div>
       </form>
     </div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="mt-10 border-t">
+  <footer class="mt-10 border-t bg-white">
     <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 text-center">
       © <span id="year"></span> My Portfolio. All rights reserved.
     </div>
   </footer>
-
-  <!-- Temporary button to bypass block -->
-  <button id="viewSourceBtn" onclick="toggleInspection()">View Source</button>
-
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
+<script src="api/send-email.js"></script>
 </body>
 </html>
