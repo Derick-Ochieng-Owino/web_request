@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Website Project Request Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Softer color theme */
+    :root {
+      --primary: #2c5282; /* soft navy */
+      --primary-hover: #2b4365;
+      --bg: #f7f8fa;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #333;
+    }
+
+    input[type="file"]::-webkit-file-upload-button {
+      background: var(--primary);
+      color: white;
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="file"]::-webkit-file-upload-button:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Disable right click & shortcuts */
+    body.disable-inspect {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Temporary inspector access button */
+    #viewSourceBtn {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      z-index: 9999;
+    }
+
+    #viewSourceBtn:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+<body class="disable-inspect antialiased">
+
+  <!-- HEADER -->
+  <header class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-lg font-bold text-[var(--primary)]">My Portfolio</a>
+      <a href="index.html#contact" class="text-sm text-[var(--primary)] hover:underline">Back to Home</a>
+    </div>
+  </header>
+
+  <!-- FORM -->
+  <main class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-lg rounded-xl p-8">
+      <h1 class="text-2xl font-bold text-[var(--primary)] mb-2">Website Project Request Form</h1>
+      <p class="text-gray-600 text-sm mb-8">
+        Fill out this form to give me a clear idea of your website needs. The more details you provide, the better I can understand your vision and give you an accurate proposal.
+      </p>
+
+      <form id="websiteRequestForm" class="space-y-8" onsubmit="handleSubmit(event)">
+        <!-- 1. Personal Information -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">👤 Personal / Contact Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Full Name *</label>
+              <input required name="name" type="text" class="w-full p-3 border rounded" placeholder="John Doe">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Email *</label>
+              <input required name="email" type="email" class="w-full p-3 border rounded" placeholder="john@example.com">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Phone *</label>
+              <input required name="phone" type="tel" class="w-full p-3 border rounded" placeholder="+2547XXXXXXXX">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Preferred Contact Method</label>
+              <select name="contact_method" class="w-full p-3 border rounded">
+                <option>Email</option>
+                <option>Phone</option>
+                <option>WhatsApp</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Company / Business Info -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">🏢 Company / Business Information (Optional)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Business / Organization Name</label>
+              <input name="business_name" type="text" class="w-full p-3 border rounded" placeholder="e.g. Bluewave Media Ltd">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Industry / Sector</label>
+              <input name="industry" type="text" class="w-full p-3 border rounded" placeholder="e.g. Real Estate, NGO, E-commerce">
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm font-medium mb-1">Brief Company Description</label>
+            <textarea name="company_description" rows="3" class="w-full p-3 border rounded" placeholder="Describe your company and what you do..."></textarea>
+          </div>
+        </section>
+
+        <!-- 3. Social Media Links -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">🌐 Social Media Links (Optional)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">TikTok</label>
+              <input name="tiktok" type="url" class="w-full p-3 border rounded" placeholder="https://www.tiktok.com/@yourhandle">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Instagram</label>
+              <input name="instagram" type="url" class="w-full p-3 border rounded" placeholder="https://www.instagram.com/yourprofile">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">LinkedIn</label>
+              <input name="linkedin" type="url" class="w-full p-3 border rounded" placeholder="https://www.linkedin.com/in/yourprofile">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">X (Twitter)</label>
+              <input name="x" type="url" class="w-full p-3 border rounded" placeholder="https://x.com/yourhandle">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Facebook</label>
+              <input name="facebook" type="url" class="w-full p-3 border rounded" placeholder="https://facebook.com/yourpage">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">YouTube</label>
+              <input name="youtube" type="url" class="w-full p-3 border rounded" placeholder="https://youtube.com/yourchannel">
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Website Project Details -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">🌐 Website Project Details</h2>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Type of Website *</label>
+            <select required name="website_type" class="w-full p-3 border rounded">
+              <option value="">Select type</option>
+              <option>Personal Portfolio</option>
+              <option>Company / Business Site</option>
+              <option>E-commerce (Online Store)</option>
+              <option>Blog / News Site</option>
+              <option>Landing Page / One Pager</option>
+              <option>Web App / Dashboard</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Main Goals of the Website *</label>
+            <textarea required name="goals" rows="3" class="w-full p-3 border rounded" placeholder="e.g. Showcase services, collect leads, sell products, improve brand presence..."></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Pages / Sections Needed</label>
+            <textarea name="pages" rows="3" class="w-full p-3 border rounded" placeholder="e.g. Home, About, Services, Contact, Blog, Shop"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Specific Features (check all that apply)</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <label><input type="checkbox" name="features" value="Contact Form" class="mr-2">Contact Form</label>
+              <label><input type="checkbox" name="features" value="Blog/News" class="mr-2">Blog / News</label>
+              <label><input type="checkbox" name="features" value="E-commerce" class="mr-2">E-commerce</label>
+              <label><input type="checkbox" name="features" value="Booking System" class="mr-2">Booking System</label>
+              <label><input type="checkbox" name="features" value="User Accounts" class="mr-2">User Accounts / Dashboard</label>
+              <label><input type="checkbox" name="features" value="Portfolio Gallery" class="mr-2">Portfolio / Gallery</label>
+              <label><input type="checkbox" name="features" value="Chat Integration" class="mr-2">Live Chat / WhatsApp</label>
+              <label><input type="checkbox" name="features" value="Multilingual" class="mr-2">Multilingual</label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Design Preferences</label>
+            <textarea name="design_preferences" rows="3" class="w-full p-3 border rounded" placeholder="Describe any style, color scheme, or example websites you like..."></textarea>
+          </div>
+        </section>
+
+        <!-- 5. File Uploads -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">📎 File Uploads</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Upload Logo</label>
+            <input name="logo" type="file" accept="image/*" class="w-full border rounded p-2">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Upload Brand Assets / PDFs / References</label>
+            <input name="assets" type="file" accept=".pdf,image/*,.zip,.ai,.psd" multiple class="w-full border rounded p-2">
+            <p class="text-xs text-gray-500 mt-1">You can attach multiple files.</p>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Upload Multiple Images</label>
+            <input name="pictures" type="file" accept="image/*" multiple class="w-full border rounded p-2">
+          </div>
+        </section>
+
+        <!-- 6. Additional Notes -->
+        <section>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">📝 Additional Notes</h2>
+          <textarea name="additional_notes" rows="4" class="w-full p-3 border rounded" placeholder="Anything else you'd like to add or clarify?"></textarea>
+        </section>
+
+        <!-- 7. Submit -->
+        <div class="pt-4 flex items-center justify-between">
+          <p id="form-status" class="text-sm text-green-600 hidden">Your request has been submitted (demo).</p>
+          <button type="submit" class="px-6 py-3 bg-[var(--primary)] text-white rounded hover:bg-[var(--primary-hover)]">Submit Request</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-10 border-t">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 text-center">
+      © <span id="year"></span> My Portfolio. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Temporary button to bypass block -->
+  <button id="viewSourceBtn" onclick="toggleInspection()">🔓 View Source</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
