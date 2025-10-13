@@ -1,0 +1,25 @@
+{
+  "name": "web-request",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000w\u0000e\u0000b\u0000_\u0000r\u0000e\u0000q\u0000u\u0000e\u0000s\u0000t\u0000\r\u0000 \u0000",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Derick-Ochieng-Owino/web_request.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Derick-Ochieng-Owino/web_request/issues"
+  },
+  "homepage": "https://github.com/Derick-Ochieng-Owino/web_request#readme",
+  "dependencies": {
+    "formidable": "^3.5.4",
+    "nodemailer": "^7.0.9"
+  }
+}
