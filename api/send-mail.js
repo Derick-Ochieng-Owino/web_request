@@ -7,7 +7,12 @@ export const config = { api: { bodyParser: false } };
 export default async function handler(req,res){
   if(req.method!=='POST') return res.status(405).json({error:'Method Not Allowed'});
 
-  const form = formidable({ multiples: true });
+  const form = formidable({
+  multiples: true,
+  allowEmptyFiles: true,
+  maxFileSize: 10 * 1024 * 1024,
+});
+
 
   form.parse(req, async (err, fields, files) => {
   if(err) {

@@ -170,12 +170,13 @@ document.getElementById('websiteRequestForm').addEventListener('submit', async f
     const formData = new FormData(this);
 
     // Compress images before sending
-    const imageFields = ['logo','pictures'];
+    const imageFields = ['logo','assets','pictures'];
     for (const field of imageFields) {
       const files = Array.from(formData.getAll(field));
       if (files.length === 0) continue;
       formData.delete(field);
       for (const file of files) {
+        if (file.size === 0) continue;
         const compressedFile = await compressImage(file, 1); // compress to ~1MB
         formData.append(field, compressedFile);
       }
