@@ -9,9 +9,11 @@ export default async function handler(req,res){
 
   const form = formidable({ multiples: true });
 
-  form.parse(req, async (err, fields, files)=>{
-    if(err) return res.status(500).json({error:'Form parse failed'});
-
+  form.parse(req, async (err, fields, files) => {
+  if(err) {
+    console.error('Form parse error:', err);
+    return res.status(500).json({error:'Form parse failed', details: err.message});
+  }
     try {
       const { name, email, phone, contact_method, business_name, industry, company_description, tiktok, instagram, linkedin, x, facebook, youtube, website_type, goals, pages, features, design_preferences, additional_notes } = fields;
 
@@ -84,7 +86,7 @@ ${additional_notes || 'None provided'}
       res.status(200).json({ success:true });
     } catch(error){
       console.error('Email send error:', error);
-      res.status(500).json({ error:'Failed to send email' });
+      res.status(500).json({ error:'Failed to send email', details: err.message });
     }
   });
 }

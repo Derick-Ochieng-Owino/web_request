@@ -24,6 +24,7 @@ document.getElementById('csrfToken').value =
   Math.random().toString(36).substring(2,15) +
   Math.random().toString(36).substring(2,15);
 
+// Textarea character counters
 const textareas = document.querySelectorAll('textarea[maxlength]');
 textareas.forEach(textarea => {
   const counterId = textarea.name + 'Count';
@@ -39,6 +40,7 @@ textareas.forEach(textarea => {
   }
 });
 
+// File input previews
 const fileInputsConfig = [
   { inputId: 'logoUpload', fileNameId: 'logoFileName', previewId: 'logoPreview', multiple: false },
   { inputId: 'assetsUpload', fileNameId: 'assetsFileName', previewId: 'assetsPreview', multiple: true },
@@ -63,6 +65,7 @@ fileInputsConfig.forEach(config => {
     if (files.length > 0) {
       preview.classList.remove('hidden');
       Array.from(files).forEach(file => {
+        console.log(`Selected file: ${file.name}, size: ${file.size/1024/1024} MB`);
         if (file.type.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = e => {
@@ -86,6 +89,7 @@ fileInputsConfig.forEach(config => {
   });
 });
 
+// Auto-save form draft
 function autoSaveForm() {
   const formData = new FormData(document.getElementById('websiteRequestForm'));
   const data = {};
@@ -98,6 +102,7 @@ function autoSaveForm() {
   localStorage.setItem('websiteRequestDraft', JSON.stringify(data));
 }
 
+// Load draft
 function loadDraft() {
   const draft = localStorage.getItem('websiteRequestDraft');
   if (!draft) return;
@@ -116,47 +121,81 @@ function loadDraft() {
   } catch(e){ console.error('Error loading draft:', e); }
 }
 
+// Compress image helper
+async function compressImage(file, maxSizeMB=1) {
+  if (!file.type.startsWith('image/')) return file; // not an image
+  const img = document.createElement('img');
+  const canvas = document.createElement('canvas');
+  const reader = new FileReader();
+
+  return new Promise((resolve,reject)=>{
+    reader.onload = e => {
+      img.src = e.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        const ratio = Math.sqrt((file.size / 1024 / 1024) / maxSizeMB);
+        if (ratio > 1) {
+          width = width / ratio;
+          height = height / ratio;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,width,height);
+        canvas.toBlob(blob=>{
+          console.log(`Compressed ${file.name}: ${blob.size/1024/1024} MB`);
+          resolve(new File([blob], file.name, {type:file.type}));
+        }, file.type, 0.7); // quality 70%
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Form submit
 document.getElementById('websiteRequestForm').addEventListener('submit', async function(e){
   e.preventDefault();
   const submitBtn = document.getElementById('submitButton');
   const originalText = submitBtn.innerHTML;
-
-  const maxSize = { logo:5*1024*1024, assets:10*1024*1024, pictures:5*1024*1024 };
-  let hasLargeFile = false;
-  ['logo','assets','pictures'].forEach(inputName=>{
-    const files = document.querySelector(`input[name="${inputName}"]`).files;
-    Array.from(files).forEach(file=>{
-      if(file.size>maxSize[inputName]){
-        showStatus(`File too large: ${file.name} (max ${maxSize[inputName]/(1024*1024)}MB)`,'error');
-        hasLargeFile=true;
-      }
-    });
-  });
-  if(hasLargeFile) return;
 
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
 
   try {
     const formData = new FormData(this);
+
+    // Compress images before sending
+    const imageFields = ['logo','pictures'];
+    for (const field of imageFields) {
+      const files = Array.from(formData.getAll(field));
+      if (files.length === 0) continue;
+      formData.delete(field);
+      for (const file of files) {
+        const compressedFile = await compressImage(file, 1); // compress to ~1MB
+        formData.append(field, compressedFile);
+      }
+    }
+
+    // Send form
     const response = await fetch('https://web-request-beryl.vercel.app/api/send-mail',{ method:'POST', body:formData });
     if(!response.ok) throw new Error(`Server responded with ${response.status}`);
     showStatus('Your request has been submitted successfully! I\'ll get back to you within 24 hours.','success');
 
-    // Reset form
     setTimeout(()=>{
       this.reset();
-      document.querySelectorAll('.file-preview').forEach(p=>{
-        p.classList.add('hidden'); p.innerHTML='';
-      });
-      document.querySelectorAll('[id$="FileName"]').forEach(el=>{
-        el.textContent=el.id.includes('logo')?'No file chosen':'No files chosen';
-      });
+      document.querySelectorAll('.file-preview').forEach(p=>{ p.classList.add('hidden'); p.innerHTML=''; });
+      document.querySelectorAll('[id$="FileName"]').forEach(el=>{ el.textContent=el.id.includes('logo')?'No file chosen':'No files chosen'; });
     },2000);
+
   } catch(error){
-    console.error(error);
+    console.error('Form submission error:', error);
     showStatus('Failed to submit your request. Please try again or contact me directly.','error');
-  } finally{
+  } finally {
     submitBtn.disabled=false;
     submitBtn.innerHTML=originalText;
   }
