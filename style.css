@@ -2,9 +2,8 @@ html {
       scroll-behavior: smooth;
     }
 
-    /* Softer color theme */
     :root {
-      --primary: #2c5282; /* soft navy */
+      --primary: #2c5282;
       --primary-hover: #2b4365;
       --bg: #f7f8fa;
     }
