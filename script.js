@@ -1,9 +1,9 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Prevent right-click / inspect shortcuts unless temporarily enabled
 document.addEventListener('contextmenu', e => {
   if (!window.inspectEnabled) e.preventDefault();
 });
+
 document.addEventListener('keydown', e => {
   if (window.inspectEnabled) return;
   if (
@@ -182,7 +182,6 @@ document.getElementById('websiteRequestForm').addEventListener('submit', async f
       }
     }
 
-    // Send form
     const response = await fetch('https://web-request-beryl.vercel.app/api/send-mail',{ method:'POST', body:formData });
     if(!response.ok) throw new Error(`Server responded with ${response.status}`);
     showStatus('Your request has been submitted successfully! I\'ll get back to you within 24 hours.','success');
